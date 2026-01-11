@@ -32,7 +32,7 @@ jobs:
           DEVELOPMENT_TEAM="" \
           SDKROOT=iphoneos \
           TARGETED_DEVICE_FAMILY="1,2" \
-          IPHONEOS_DEPLOYMENT_TARGET=16.0 \
+          IPHONEOS_DEPLOYMENT_TARGET=17.0 \
           SUPPORTS_MACCATALYST=NO \
           ASSETCATALOG_COMPILER_APPICON_NAME=AppIcon
     
