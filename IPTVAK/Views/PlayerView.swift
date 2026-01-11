@@ -9,6 +9,7 @@ struct PlayerView: View {
     @State private var isLoading = true
     @State private var hasError = false
     @State private var errorMessage = ""
+    @State private var isFullScreen = false // Tam ekran durumu takibi
     
     // Kullanıcı ayarları (HomePod optimizasyonu)
     @AppStorage("lowLatencyMode") private var lowLatencyMode = true
@@ -25,7 +26,7 @@ struct PlayerView: View {
                 errorView
             } else if let player = player {
                 // AVPlayerViewController kullanarak daha iyi HomePod desteği
-                VideoPlayerView(player: player)
+                VideoPlayerView(player: player, isFullScreen: $isFullScreen)
                     .ignoresSafeArea()
             }
         }
@@ -34,7 +35,14 @@ struct PlayerView: View {
             setupPlayer()
         }
         .onDisappear {
-            cleanupPlayer()
+            // Tam ekran geçişinde cleanup yapma!
+            // Sadece gerçekten view'dan çıkıldığında temizle
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                // Eğer player hala nil değilse ve görünür değilse temizle
+                if self.player != nil && !isFullScreen {
+                    cleanupPlayer()
+                }
+            }
         }
         #if os(tvOS)
         .toolbar {
@@ -254,15 +262,26 @@ struct PlayerView: View {
 // MARK: - Video Player (Cross-platform)
 struct VideoPlayerView: UIViewControllerRepresentable {
     let player: AVPlayer
+    @Binding var isFullScreen: Bool
+    
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
     
     func makeUIViewController(context: Context) -> AVPlayerViewController {
         let controller = AVPlayerViewController()
         controller.player = player
         controller.showsPlaybackControls = true
+        controller.delegate = context.coordinator
         
         #if os(iOS)
         controller.allowsPictureInPicturePlayback = true
         controller.canStartPictureInPictureAutomaticallyFromInline = true
+        // Video tam ekranda düzgün görünsün
+        controller.videoGravity = .resizeAspect
+        // Oynatma başladığında otomatik tam ekran
+        controller.entersFullScreenWhenPlaybackBegins = false
+        controller.exitsFullScreenWhenPlaybackEnds = false
         #endif
         
         #if os(tvOS)
@@ -276,6 +295,36 @@ struct VideoPlayerView: UIViewControllerRepresentable {
     func updateUIViewController(_ uiViewController: AVPlayerViewController, context: Context) {
         if uiViewController.player !== player {
             uiViewController.player = player
+        }
+    }
+    
+    // Coordinator: Tam ekran geçişlerini yönetir
+    class Coordinator: NSObject, AVPlayerViewControllerDelegate {
+        var parent: VideoPlayerView
+        
+        init(_ parent: VideoPlayerView) {
+            self.parent = parent
+        }
+        
+        #if os(iOS)
+        func playerViewController(_ playerViewController: AVPlayerViewController, willBeginFullScreenPresentationWithAnimationCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+            parent.isFullScreen = true
+            // Tam ekrana geçerken oynatmaya devam et
+            parent.player.play()
+        }
+        
+        func playerViewController(_ playerViewController: AVPlayerViewController, willEndFullScreenPresentationWithAnimationCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+            coordinator.animate(alongsideTransition: nil) { _ in
+                self.parent.isFullScreen = false
+                // Tam ekrandan çıkarken oynatmaya devam et
+                self.parent.player.play()
+            }
+        }
+        #endif
+        
+        func playerViewControllerDidStopPictureInPicture(_ playerViewController: AVPlayerViewController) {
+            // PiP'den çıkınca oynatmaya devam et
+            parent.player.play()
         }
     }
 }
