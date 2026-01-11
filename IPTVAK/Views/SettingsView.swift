@@ -101,16 +101,34 @@ struct SettingsView: View {
                 }
                 
                 // Buffer süresi
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack {
-                        Label(L10n.Settings.Audio.buffer, systemImage: "timer")
-                        Spacer()
-                        Text(L10n.Settings.Audio.bufferValue(bufferDuration))
-                            .foregroundColor(.secondary)
-                    }
+                HStack {
+                    Label(L10n.Settings.Audio.buffer, systemImage: "timer")
+                    Spacer()
                     
-                    Slider(value: $bufferDuration, in: 0.5...5.0, step: 0.5)
-                        .tint(Color("AccentColor"))
+                    // tvOS'ta Slider yok, butonlarla kontrol
+                    Button {
+                        if bufferDuration > 0.5 {
+                            bufferDuration -= 0.5
+                        }
+                    } label: {
+                        Image(systemName: "minus.circle.fill")
+                            .font(.title2)
+                    }
+                    .buttonStyle(.plain)
+                    
+                    Text(L10n.Settings.Audio.bufferValue(bufferDuration))
+                        .frame(width: 80)
+                        .foregroundColor(.secondary)
+                    
+                    Button {
+                        if bufferDuration < 5.0 {
+                            bufferDuration += 0.5
+                        }
+                    } label: {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.title2)
+                    }
+                    .buttonStyle(.plain)
                 }
                 
                 // Gecikme bilgisi

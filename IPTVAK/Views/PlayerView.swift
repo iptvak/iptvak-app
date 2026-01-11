@@ -236,11 +236,6 @@ struct TVVideoPlayer: UIViewControllerRepresentable {
         // ✅ HomePod ses senkronizasyonu için
         controller.appliesPreferredDisplayCriteriaAutomatically = true
         
-        // Harici ekran/hoparlör için optimize et
-        if #available(tvOS 15.0, *) {
-            controller.canStartPictureInPictureAutomaticallyFromInline = true
-        }
-        
         return controller
     }
     
