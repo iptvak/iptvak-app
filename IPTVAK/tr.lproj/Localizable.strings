@@ -1,0 +1,91 @@
+/* 
+  Localizable.strings (Turkish)
+  IPTVAK
+  
+  Türkçe çeviri
+*/
+
+// MARK: - Tab Bar
+"tab.channels" = "Kanallar";
+"tab.favorites" = "Favoriler";
+"tab.search" = "Ara";
+"tab.settings" = "Ayarlar";
+
+// MARK: - Main Screen
+"app.title" = "IPTVAK";
+"channels.empty.title" = "Playlist Yok";
+"channels.empty.description" = "Ayarlar bölümünden M3U playlist linkinizi ekleyin.";
+"channels.loading" = "Kanallar yükleniyor...";
+"channels.count" = "%d Kanal";
+"channels.seeAll" = "Tümünü Gör";
+
+// MARK: - Favorites
+"favorites.title" = "Favoriler";
+"favorites.empty.title" = "Favori Kanal Yok";
+"favorites.empty.description" = "Favori kanallarınız burada görünecek.\nBir kanalı favorilere eklemek için uzun basın.";
+"favorites.add" = "Favorilere Ekle";
+"favorites.remove" = "Favorilerden Çıkar";
+
+// MARK: - Search
+"search.title" = "Ara";
+"search.prompt" = "Kanal ara...";
+"search.empty.title" = "Kanal Ara";
+"search.empty.description" = "Kanal adını yazarak arama yapın.";
+"search.notFound.title" = "Kanal Bulunamadı";
+"search.notFound.description" = "'%@' ile eşleşen kanal yok.";
+
+// MARK: - Player
+"player.loading" = "Yükleniyor...";
+"player.error.title" = "Kanal Yüklenemedi";
+"player.error.invalidURL" = "Geçersiz stream URL'si";
+"player.retry" = "Tekrar Dene";
+
+// MARK: - Settings
+"settings.title" = "Ayarlar";
+"settings.playlist.title" = "Playlist Ayarları";
+"settings.playlist.url" = "M3U Playlist URL";
+"settings.playlist.urlPlaceholder" = "https://example.com/playlist.m3u";
+"settings.playlist.load" = "Playlist Yükle";
+"settings.playlist.refresh" = "Yenile";
+"settings.playlist.active" = "Aktif playlist: %@";
+"settings.playlist.error" = "Hata: %@";
+
+// MARK: - HomePod & Audio Settings
+"settings.audio.title" = "HomePod & Ses Ayarları";
+"settings.audio.homepod" = "HomePod/AirPlay";
+"settings.audio.connected" = "Bağlı ✓";
+"settings.audio.notConnected" = "Bağlı Değil";
+"settings.audio.lowLatency" = "Düşük Gecikme Modu";
+"settings.audio.buffer" = "Buffer Süresi";
+"settings.audio.bufferValue" = "%.1f sn";
+"settings.audio.latency" = "Ses Gecikmesi";
+"settings.audio.latencyValue" = "%.0f ms";
+"settings.audio.footer" = "Düşük gecikme modu, HomePod'da ses/görüntü senkronizasyonunu iyileştirir. Donma yaşarsanız buffer süresini artırın.";
+
+// MARK: - Statistics
+"settings.stats.title" = "İstatistikler";
+"settings.stats.totalChannels" = "Toplam Kanal";
+"settings.stats.groups" = "Grup Sayısı";
+"settings.stats.favorites" = "Favori Kanal";
+
+// MARK: - Data Management
+"settings.data.title" = "Veri Yönetimi";
+"settings.data.clearAll" = "Tüm Verileri Temizle";
+"settings.data.clearConfirm.title" = "Tüm Verileri Sil?";
+"settings.data.clearConfirm.message" = "Bu işlem geri alınamaz. Tüm playlist ve favoriler silinecek.";
+"settings.data.clearConfirm.delete" = "Sil";
+"settings.data.clearConfirm.cancel" = "İptal";
+"settings.data.footer" = "Playlist, favoriler ve tüm ayarlar silinecek.";
+
+// MARK: - About
+"settings.about.title" = "Hakkında";
+"settings.about.version" = "Versiyon";
+"settings.about.developer" = "Geliştirici";
+
+// MARK: - Alerts
+"alert.success" = "Başarılı";
+"alert.success.loaded" = "%d kanal başarıyla yüklendi!";
+"alert.ok" = "Tamam";
+
+// MARK: - General
+"general.group" = "Genel";

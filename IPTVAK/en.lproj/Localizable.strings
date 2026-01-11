@@ -1,0 +1,91 @@
+/* 
+  Localizable.strings (English)
+  IPTVAK
+  
+  Main language - English
+*/
+
+// MARK: - Tab Bar
+"tab.channels" = "Channels";
+"tab.favorites" = "Favorites";
+"tab.search" = "Search";
+"tab.settings" = "Settings";
+
+// MARK: - Main Screen
+"app.title" = "IPTVAK";
+"channels.empty.title" = "No Playlist";
+"channels.empty.description" = "Add your M3U playlist link from Settings.";
+"channels.loading" = "Loading channels...";
+"channels.count" = "%d Channels";
+"channels.seeAll" = "See All";
+
+// MARK: - Favorites
+"favorites.title" = "Favorites";
+"favorites.empty.title" = "No Favorite Channels";
+"favorites.empty.description" = "Your favorite channels will appear here.\nLong press on a channel to add to favorites.";
+"favorites.add" = "Add to Favorites";
+"favorites.remove" = "Remove from Favorites";
+
+// MARK: - Search
+"search.title" = "Search";
+"search.prompt" = "Search channels...";
+"search.empty.title" = "Search Channels";
+"search.empty.description" = "Type a channel name to search.";
+"search.notFound.title" = "Channel Not Found";
+"search.notFound.description" = "No channel matching '%@'.";
+
+// MARK: - Player
+"player.loading" = "Loading...";
+"player.error.title" = "Channel Failed to Load";
+"player.error.invalidURL" = "Invalid stream URL";
+"player.retry" = "Retry";
+
+// MARK: - Settings
+"settings.title" = "Settings";
+"settings.playlist.title" = "Playlist Settings";
+"settings.playlist.url" = "M3U Playlist URL";
+"settings.playlist.urlPlaceholder" = "https://example.com/playlist.m3u";
+"settings.playlist.load" = "Load Playlist";
+"settings.playlist.refresh" = "Refresh";
+"settings.playlist.active" = "Active playlist: %@";
+"settings.playlist.error" = "Error: %@";
+
+// MARK: - HomePod & Audio Settings
+"settings.audio.title" = "HomePod & Audio Settings";
+"settings.audio.homepod" = "HomePod/AirPlay";
+"settings.audio.connected" = "Connected ✓";
+"settings.audio.notConnected" = "Not Connected";
+"settings.audio.lowLatency" = "Low Latency Mode";
+"settings.audio.buffer" = "Buffer Duration";
+"settings.audio.bufferValue" = "%.1f sec";
+"settings.audio.latency" = "Audio Latency";
+"settings.audio.latencyValue" = "%.0f ms";
+"settings.audio.footer" = "Low latency mode improves audio/video sync on HomePod. Increase buffer duration if you experience stuttering.";
+
+// MARK: - Statistics
+"settings.stats.title" = "Statistics";
+"settings.stats.totalChannels" = "Total Channels";
+"settings.stats.groups" = "Groups";
+"settings.stats.favorites" = "Favorite Channels";
+
+// MARK: - Data Management
+"settings.data.title" = "Data Management";
+"settings.data.clearAll" = "Clear All Data";
+"settings.data.clearConfirm.title" = "Delete All Data?";
+"settings.data.clearConfirm.message" = "This action cannot be undone. All playlists and favorites will be deleted.";
+"settings.data.clearConfirm.delete" = "Delete";
+"settings.data.clearConfirm.cancel" = "Cancel";
+"settings.data.footer" = "Playlist, favorites, and all settings will be deleted.";
+
+// MARK: - About
+"settings.about.title" = "About";
+"settings.about.version" = "Version";
+"settings.about.developer" = "Developer";
+
+// MARK: - Alerts
+"alert.success" = "Success";
+"alert.success.loaded" = "%d channels loaded successfully!";
+"alert.ok" = "OK";
+
+// MARK: - General
+"general.group" = "General";

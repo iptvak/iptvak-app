@@ -1,0 +1,91 @@
+/* 
+  Localizable.strings (Russian)
+  IPTVAK
+  
+  Русский перевод
+*/
+
+// MARK: - Tab Bar
+"tab.channels" = "Каналы";
+"tab.favorites" = "Избранное";
+"tab.search" = "Поиск";
+"tab.settings" = "Настройки";
+
+// MARK: - Main Screen
+"app.title" = "IPTVAK";
+"channels.empty.title" = "Нет плейлиста";
+"channels.empty.description" = "Добавьте ссылку на M3U плейлист в настройках.";
+"channels.loading" = "Загрузка каналов...";
+"channels.count" = "%d Каналов";
+"channels.seeAll" = "Показать все";
+
+// MARK: - Favorites
+"favorites.title" = "Избранное";
+"favorites.empty.title" = "Нет избранных каналов";
+"favorites.empty.description" = "Ваши избранные каналы появятся здесь.\nНажмите и удерживайте канал, чтобы добавить в избранное.";
+"favorites.add" = "Добавить в избранное";
+"favorites.remove" = "Удалить из избранного";
+
+// MARK: - Search
+"search.title" = "Поиск";
+"search.prompt" = "Поиск каналов...";
+"search.empty.title" = "Поиск каналов";
+"search.empty.description" = "Введите название канала для поиска.";
+"search.notFound.title" = "Канал не найден";
+"search.notFound.description" = "Нет каналов, соответствующих '%@'.";
+
+// MARK: - Player
+"player.loading" = "Загрузка...";
+"player.error.title" = "Не удалось загрузить канал";
+"player.error.invalidURL" = "Неверный URL потока";
+"player.retry" = "Повторить";
+
+// MARK: - Settings
+"settings.title" = "Настройки";
+"settings.playlist.title" = "Настройки плейлиста";
+"settings.playlist.url" = "URL M3U плейлиста";
+"settings.playlist.urlPlaceholder" = "https://example.com/playlist.m3u";
+"settings.playlist.load" = "Загрузить плейлист";
+"settings.playlist.refresh" = "Обновить";
+"settings.playlist.active" = "Активный плейлист: %@";
+"settings.playlist.error" = "Ошибка: %@";
+
+// MARK: - HomePod & Audio Settings
+"settings.audio.title" = "HomePod и звук";
+"settings.audio.homepod" = "HomePod/AirPlay";
+"settings.audio.connected" = "Подключено ✓";
+"settings.audio.notConnected" = "Не подключено";
+"settings.audio.lowLatency" = "Режим низкой задержки";
+"settings.audio.buffer" = "Длительность буфера";
+"settings.audio.bufferValue" = "%.1f сек";
+"settings.audio.latency" = "Задержка звука";
+"settings.audio.latencyValue" = "%.0f мс";
+"settings.audio.footer" = "Режим низкой задержки улучшает синхронизацию аудио/видео на HomePod. Увеличьте буфер при прерываниях.";
+
+// MARK: - Statistics
+"settings.stats.title" = "Статистика";
+"settings.stats.totalChannels" = "Всего каналов";
+"settings.stats.groups" = "Групп";
+"settings.stats.favorites" = "Избранных каналов";
+
+// MARK: - Data Management
+"settings.data.title" = "Управление данными";
+"settings.data.clearAll" = "Удалить все данные";
+"settings.data.clearConfirm.title" = "Удалить все данные?";
+"settings.data.clearConfirm.message" = "Это действие нельзя отменить. Все плейлисты и избранное будут удалены.";
+"settings.data.clearConfirm.delete" = "Удалить";
+"settings.data.clearConfirm.cancel" = "Отмена";
+"settings.data.footer" = "Плейлист, избранное и все настройки будут удалены.";
+
+// MARK: - About
+"settings.about.title" = "О приложении";
+"settings.about.version" = "Версия";
+"settings.about.developer" = "Разработчик";
+
+// MARK: - Alerts
+"alert.success" = "Успешно";
+"alert.success.loaded" = "%d каналов успешно загружено!";
+"alert.ok" = "ОК";
+
+// MARK: - General
+"general.group" = "Общее";
