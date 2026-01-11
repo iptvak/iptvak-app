@@ -21,9 +21,6 @@ jobs:
     - name: Show Xcode version
       run: xcodebuild -version
     
-    - name: Show available schemes
-      run: xcodebuild -project IPTVAK.xcodeproj -list
-    
     - name: Build for tvOS Simulator
       run: |
         xcodebuild clean build \
@@ -31,17 +28,26 @@ jobs:
           -scheme IPTVAK \
           -destination 'platform=tvOS Simulator,name=Apple TV 4K (3rd generation)' \
           -configuration Debug \
-          CODE_SIGNING_ALLOWED=NO \
-          ONLY_ACTIVE_ARCH=NO \
-          2>&1 | tee build.log
-        
-        # Show errors clearly
-        echo "=== BUILD ERRORS ==="
-        grep -A 5 "error:" build.log || echo "No errors found"
+          -derivedDataPath build \
+          CODE_SIGNING_ALLOWED=NO
     
-    - name: Upload build log on failure
-      if: failure()
+    - name: Find and package app
+      run: |
+        echo "=== Looking for .app files ==="
+        find build -name "*.app" -type d
+        
+        # Copy app to known location
+        mkdir -p output
+        find build -name "IPTVAK.app" -type d -exec cp -r {} output/ \;
+        
+        # Create ZIP
+        cd output
+        zip -r IPTVAK-tvOS-Simulator.zip IPTVAK.app
+        ls -la
+    
+    - name: Upload App
       uses: actions/upload-artifact@v4
       with:
-        name: build-log
-        path: build.log
+        name: IPTVAK-tvOS-App
+        path: output/IPTVAK-tvOS-Simulator.zip
+        if-no-files-found: error
