@@ -101,11 +101,22 @@ struct SettingsView: View {
                 }
                 
                 // Buffer süresi
+                #if os(iOS)
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack {
+                        Label(L10n.Settings.Audio.buffer, systemImage: "timer")
+                        Spacer()
+                        Text(L10n.Settings.Audio.bufferValue(bufferDuration))
+                            .foregroundColor(.secondary)
+                    }
+                    Slider(value: $bufferDuration, in: 0.5...5.0, step: 0.5)
+                        .tint(.accentColor)
+                }
+                #else
                 HStack {
                     Label(L10n.Settings.Audio.buffer, systemImage: "timer")
                     Spacer()
                     
-                    // tvOS'ta Slider yok, butonlarla kontrol
                     Button {
                         if bufferDuration > 0.5 {
                             bufferDuration -= 0.5
@@ -130,6 +141,7 @@ struct SettingsView: View {
                     }
                     .buttonStyle(.plain)
                 }
+                #endif
                 
                 // Gecikme bilgisi
                 if audioLatency > 0 {

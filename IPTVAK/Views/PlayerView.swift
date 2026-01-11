@@ -25,7 +25,7 @@ struct PlayerView: View {
                 errorView
             } else if let player = player {
                 // AVPlayerViewController kullanarak daha iyi HomePod desteği
-                TVVideoPlayer(player: player)
+                VideoPlayerView(player: player)
                     .ignoresSafeArea()
             }
         }
@@ -36,6 +36,7 @@ struct PlayerView: View {
         .onDisappear {
             cleanupPlayer()
         }
+        #if os(tvOS)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button {
@@ -46,12 +47,27 @@ struct PlayerView: View {
                 }
             }
         }
+        #else
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    favoritesManager.toggleFavorite(channel.id)
+                } label: {
+                    Image(systemName: favoritesManager.isFavorite(channel.id) ? "star.fill" : "star")
+                        .foregroundColor(favoritesManager.isFavorite(channel.id) ? .yellow : .gray)
+                }
+            }
+        }
+        #endif
         .navigationTitle(channel.name)
+        #if os(iOS)
+        .navigationBarTitleDisplayMode(.inline)
+        #endif
     }
     
     // MARK: - Loading View
     private var loadingView: some View {
-        VStack(spacing: 30) {
+        VStack(spacing: 20) {
             // Kanal logosu
             if let logoURL = channel.logoURL, let url = URL(string: logoURL) {
                 AsyncImage(url: url) { phase in
@@ -60,7 +76,7 @@ struct PlayerView: View {
                         image
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: 150, height: 150)
+                            .frame(width: iconSize, height: iconSize)
                     default:
                         channelIcon
                     }
@@ -70,32 +86,34 @@ struct PlayerView: View {
             }
             
             Text(channel.name)
-                .font(.title)
+                .font(.title2)
                 .fontWeight(.bold)
             
             ProgressView()
-                .scaleEffect(1.5)
+                .scaleEffect(1.2)
             
             Text(L10n.Player.loading)
                 .foregroundColor(.secondary)
+                .font(.subheadline)
         }
     }
     
     // MARK: - Error View
     private var errorView: some View {
-        VStack(spacing: 30) {
+        VStack(spacing: 20) {
             Image(systemName: "exclamationmark.triangle.fill")
-                .font(.system(size: 80))
+                .font(.system(size: errorIconSize))
                 .foregroundColor(.orange)
             
             Text(L10n.Player.errorTitle)
-                .font(.title)
+                .font(.title2)
                 .fontWeight(.bold)
             
             Text(errorMessage)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
-                .padding(.horizontal, 50)
+                .padding(.horizontal, 30)
+                .font(.subheadline)
             
             Button(L10n.Player.retry) {
                 hasError = false
@@ -104,6 +122,23 @@ struct PlayerView: View {
             }
             .buttonStyle(.bordered)
         }
+    }
+    
+    // MARK: - Platform-specific sizes
+    private var iconSize: CGFloat {
+        #if os(tvOS)
+        return 150
+        #else
+        return 80
+        #endif
+    }
+    
+    private var errorIconSize: CGFloat {
+        #if os(tvOS)
+        return 80
+        #else
+        return 50
+        #endif
     }
     
     // MARK: - Kanal İkonu
@@ -117,15 +152,15 @@ struct PlayerView: View {
                         endPoint: .bottomTrailing
                     )
                 )
-                .frame(width: 150, height: 150)
+                .frame(width: iconSize, height: iconSize)
             
             Text(channel.name.prefix(2).uppercased())
-                .font(.system(size: 50, weight: .bold))
+                .font(.system(size: iconSize * 0.35, weight: .bold))
                 .foregroundColor(.white)
         }
     }
     
-    // MARK: - Audio Session Konfigürasyonu (HomePod için kritik!)
+    // MARK: - Audio Session Konfigürasyonu
     private func configureAudioSession() {
         do {
             let audioSession = AVAudioSession.sharedInstance()
@@ -137,16 +172,15 @@ struct PlayerView: View {
                 options: [.allowAirPlay, .allowBluetooth, .allowBluetoothA2DP]
             )
             
-            // Ses senkronizasyonu için buffer policy
             try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
             
-            print("✅ Audio session HomePod için yapılandırıldı")
+            print("✅ Audio session yapılandırıldı")
         } catch {
             print("⚠️ Audio session hatası: \(error.localizedDescription)")
         }
     }
     
-    // MARK: - Player Setup (HomePod Optimizasyonlu)
+    // MARK: - Player Setup
     private func setupPlayer() {
         guard let url = URL(string: channel.streamURL) else {
             hasError = true
@@ -162,12 +196,11 @@ struct PlayerView: View {
         
         let playerItem = AVPlayerItem(asset: asset)
         
-        // ✅ HomePod ses senkronizasyonu için kritik ayarlar
-        // Kullanıcının ayarladığı buffer süresini kullan
+        // Buffer ayarları
         playerItem.preferredForwardBufferDuration = bufferDuration
         
         // Canlı yayınlar için gecikmeyi minimize et
-        if #available(tvOS 15.0, *) {
+        if #available(iOS 15.0, tvOS 15.0, *) {
             playerItem.configuredTimeOffsetFromLive = CMTime(seconds: 2.0, preferredTimescale: 1)
             playerItem.automaticallyPreservesTimeOffsetFromLive = true
         }
@@ -189,16 +222,15 @@ struct PlayerView: View {
         
         let newPlayer = AVPlayer(playerItem: playerItem)
         
-        // ✅ HomePod için kritik player ayarları
-        // Düşük gecikme modunda otomatik beklemeyi kapat
+        // Player ayarları
         newPlayer.automaticallyWaitsToMinimizeStalling = !lowLatencyMode
-        
-        // AirPlay için ses senkronizasyonunu aktifleştir
         newPlayer.allowsExternalPlayback = true
-        newPlayer.usesExternalPlaybackWhileExternalScreenIsActive = true
         
-        // Master clock senkronizasyonu (HomePod için önemli)
-        if #available(tvOS 15.0, *) {
+        #if os(tvOS)
+        newPlayer.usesExternalPlaybackWhileExternalScreenIsActive = true
+        #endif
+        
+        if #available(iOS 15.0, tvOS 15.0, *) {
             newPlayer.audiovisualBackgroundPlaybackPolicy = .continuesIfPossible
         }
         
@@ -206,8 +238,6 @@ struct PlayerView: View {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             self.player = newPlayer
             self.isLoading = false
-            
-            // Rate'i 1.0 olarak ayarla ve başlat
             newPlayer.playImmediately(atRate: 1.0)
         }
     }
@@ -217,30 +247,33 @@ struct PlayerView: View {
         player?.pause()
         player?.replaceCurrentItem(with: nil)
         player = nil
-        
-        // Notification'ları temizle
         NotificationCenter.default.removeObserver(self)
     }
 }
 
-// MARK: - tvOS Video Player (AVPlayerViewController ile HomePod desteği)
-struct TVVideoPlayer: UIViewControllerRepresentable {
+// MARK: - Video Player (Cross-platform)
+struct VideoPlayerView: UIViewControllerRepresentable {
     let player: AVPlayer
     
     func makeUIViewController(context: Context) -> AVPlayerViewController {
         let controller = AVPlayerViewController()
         controller.player = player
         controller.showsPlaybackControls = true
-        controller.allowsPictureInPicturePlayback = true
         
-        // ✅ HomePod ses senkronizasyonu için
+        #if os(iOS)
+        controller.allowsPictureInPicturePlayback = true
+        controller.canStartPictureInPictureAutomaticallyFromInline = true
+        #endif
+        
+        #if os(tvOS)
+        controller.allowsPictureInPicturePlayback = true
         controller.appliesPreferredDisplayCriteriaAutomatically = true
+        #endif
         
         return controller
     }
     
     func updateUIViewController(_ uiViewController: AVPlayerViewController, context: Context) {
-        // Player değişirse güncelle
         if uiViewController.player !== player {
             uiViewController.player = player
         }
@@ -253,13 +286,11 @@ class AudioSyncManager {
     
     private init() {}
     
-    /// HomePod bağlı mı kontrol et
     var isHomePodConnected: Bool {
         let audioSession = AVAudioSession.sharedInstance()
         let currentRoute = audioSession.currentRoute
         
         for output in currentRoute.outputs {
-            // AirPlay cihazı (HomePod dahil)
             if output.portType == .airPlay {
                 return true
             }
@@ -267,16 +298,13 @@ class AudioSyncManager {
         return false
     }
     
-    /// Ses gecikmesini hesapla
     func getAudioLatency() -> TimeInterval {
         let audioSession = AVAudioSession.sharedInstance()
         return audioSession.outputLatency + audioSession.inputLatency
     }
     
-    /// HomePod için önerilen buffer süresi
     var recommendedBufferDuration: TimeInterval {
         if isHomePodConnected {
-            // HomePod bağlıyken daha kısa buffer (daha az gecikme)
             return 1.5
         }
         return 3.0
