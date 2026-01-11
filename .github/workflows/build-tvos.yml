@@ -21,15 +21,17 @@ jobs:
     - name: Show Xcode version
       run: xcodebuild -version
     
-    - name: Build for tvOS Simulator
+    - name: Build for tvOS Device
       run: |
         xcodebuild clean build \
           -project IPTVAK.xcodeproj \
           -scheme IPTVAK \
-          -destination 'platform=tvOS Simulator,name=Apple TV 4K (3rd generation)' \
+          -sdk appletvos \
           -configuration Debug \
           -derivedDataPath build \
-          CODE_SIGNING_ALLOWED=NO
+          CODE_SIGNING_ALLOWED=NO \
+          CODE_SIGN_IDENTITY="" \
+          DEVELOPMENT_TEAM=""
     
     - name: Find and package app
       run: |
@@ -40,14 +42,16 @@ jobs:
         mkdir -p output
         find build -name "IPTVAK.app" -type d -exec cp -r {} output/ \;
         
-        # Create ZIP
+        # Create IPA for sideloading
         cd output
-        zip -r IPTVAK-tvOS-Simulator.zip IPTVAK.app
+        mkdir -p Payload
+        cp -r IPTVAK.app Payload/
+        zip -r IPTVAK.ipa Payload
         ls -la
     
-    - name: Upload App
+    - name: Upload IPA
       uses: actions/upload-artifact@v4
       with:
         name: IPTVAK-tvOS-App
-        path: output/IPTVAK-tvOS-Simulator.zip
+        path: output/IPTVAK.ipa
         if-no-files-found: error
