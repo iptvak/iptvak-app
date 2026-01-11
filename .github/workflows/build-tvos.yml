@@ -15,20 +15,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
     
-    - name: List Xcode versions
-      run: ls /Applications/ | grep Xcode
-    
     - name: Select Xcode version
       run: sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer || sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
     
     - name: Show Xcode version
       run: xcodebuild -version
-    
-    - name: List project structure
-      run: |
-        pwd
-        ls -la
-        ls -la IPTVAK.xcodeproj/ || echo "No xcodeproj in root"
     
     - name: Show available schemes
       run: xcodebuild -project IPTVAK.xcodeproj -list
@@ -41,45 +32,16 @@ jobs:
           -destination 'platform=tvOS Simulator,name=Apple TV 4K (3rd generation)' \
           -configuration Debug \
           CODE_SIGNING_ALLOWED=NO \
-          ONLY_ACTIVE_ARCH=NO
-      continue-on-error: true
+          ONLY_ACTIVE_ARCH=NO \
+          2>&1 | tee build.log
+        
+        # Show errors clearly
+        echo "=== BUILD ERRORS ==="
+        grep -A 5 "error:" build.log || echo "No errors found"
     
-    - name: Archive for tvOS
-      run: |
-        xcodebuild clean archive \
-          -project IPTVAK.xcodeproj \
-          -scheme IPTVAK \
-          -sdk appletvos \
-          -configuration Release \
-          -archivePath build/IPTVAK.xcarchive \
-          CODE_SIGNING_ALLOWED=NO \
-          CODE_SIGN_IDENTITY="" \
-          DEVELOPMENT_TEAM="" \
-          PROVISIONING_PROFILE_SPECIFIER=""
-      continue-on-error: true
-    
-    - name: List build output
-      run: |
-        find . -name "*.app" -type d 2>/dev/null || echo "No .app found"
-        find . -name "*.xcarchive" -type d 2>/dev/null || echo "No .xcarchive found"
-      continue-on-error: true
-    
-    - name: Create unsigned IPA
-      run: |
-        if [ -d "build/IPTVAK.xcarchive" ]; then
-          mkdir -p build/Payload
-          cp -r build/IPTVAK.xcarchive/Products/Applications/IPTVAK.app build/Payload/ 2>/dev/null || echo "App not in expected location"
-          cd build
-          zip -r IPTVAK-unsigned.ipa Payload 2>/dev/null || echo "Could not create IPA"
-        fi
-      continue-on-error: true
-    
-    - name: Upload Archive
+    - name: Upload build log on failure
+      if: failure()
       uses: actions/upload-artifact@v4
       with:
-        name: IPTVAK-tvOS-Build
-        path: |
-          build/IPTVAK.xcarchive
-          build/*.ipa
-          **/Build/Products/**/*.app
-        if-no-files-found: warn
+        name: build-log
+        path: build.log
